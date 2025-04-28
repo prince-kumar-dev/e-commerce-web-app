@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Responsive tag -->
+    <title>Login - My E-Commerce</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<!-- Basic Header -->
+<header>
+    <nav>
+        <div class="logo"><a href="index.html">E-Shop</a></div>
+        <ul>
+            <li><a href="index.html">Products</a></li>
+            <li><a href="login.html" class="active">Login</a></li>
+            <li><a href="register.html">Register</a></li>
+            <!-- Add Cart link later -->
+        </ul>
+    </nav>
+</header>
+
+<main class="container">
+    <div class="form-container">
+        <h2>Login</h2>
+
+        <!-- Message Area -->
+        <div id="message" class="message hidden"></div>
+
+        <form id="loginForm">
+
+            <div class="form-group">
+                <label for="loginUsername">Username</label> <!-- Added Label -->
+                <input type="text" id="loginUsername" placeholder="Your username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="loginPassword">Password</label> <!-- Added Label -->
+                <input type="password" id="loginPassword" placeholder="Your password" required>
+            </div>
+
+            <button type="submit" id="loginButton">
+                Login
+                <span class="loader"></span> <!-- Optional Loader -->
+            </button>
+
+        </form>
+        <p>New here? <a href="register.html">Register an account</a></p>
+
+    </div>
+</main>
+
+<script src="js/auth.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Responsive tag -->
+    <title>Product Catalog - My E-Commerce</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<!-- Header with dynamic user status -->
+<header>
+    <nav>
+        <div class="logo"><a href="index.html">E-Shop</a></div>
+        <ul id="nav-links">
+            <li><a href="index.html" class="active">Products</a></li>
+            <!-- Login/Register or User/Logout links will be added by JS -->
+        </ul>
+        <!-- Placeholder for user status/logout -->
+        <div id="user-status"></div>
+    </nav>
+</header>
+
+<main class="container">
+    <h1>Product Catalog</h1>
+
+    <!-- Message Area for add to cart feedback -->
+    <div id="cart-message" class="message hidden" style="margin-bottom: 20px;"></div>
+
+    <div id="product-list" class="product-container">
+        <!-- Products will be loaded here by JavaScript -->
+        <p>Loading products...</p> <!-- Loading indicator -->
+    </div>
+</main>
+
+
+
+<!-- Include auth.js first if needed for user status check, or create a shared script -->
+<script src="js/auth.js"></script> <!-- Needed for logout if implemented here -->
+<script src="js/products.js"></script>
+<script>
+    // Simple script to update nav based on login status
+    document.addEventListener('DOMContentLoaded', () => {
+      const userId = localStorage.getItem("userId");
+      const navLinks = document.getElementById('nav-links');
+      const userStatus = document.getElementById('user-status');
+
+      if (userId) {
+        // Logged in
+        userStatus.innerHTML = `<span>Welcome!</span> <a href="#" id="logout-link">Logout</a>`;
+        // Add cart link if you have one
+        // const cartLink = document.createElement('li');
+        // cartLink.innerHTML = `<a href="cart.html">Cart</a>`;
+        // navLinks.appendChild(cartLink);
+
+        // Add logout functionality
+        document.getElementById('logout-link').addEventListener('click', (e) => {
+          e.preventDefault();
+          localStorage.removeItem("userId");
+          // Optionally remove token if you store one
+          // localStorage.removeItem("authToken");
+          alert("You have been logged out.");
+          window.location.href = "login.html"; // Redirect to login
+        });
+      } else {
+        // Logged out
+        const loginLink = document.createElement('li');
+        loginLink.innerHTML = `<a href="login.html">Login</a>`;
+        navLinks.appendChild(loginLink);
+
+        const registerLink = document.createElement('li');
+        registerLink.innerHTML = `<a href="register.html">Register</a>`;
+        navLinks.appendChild(registerLink);
+        userStatus.innerHTML = ''; // Clear user status area
+      }
+    });
+</script>
+</body>
+
+</html>
