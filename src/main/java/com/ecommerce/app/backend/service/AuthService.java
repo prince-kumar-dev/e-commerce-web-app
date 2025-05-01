@@ -15,17 +15,7 @@ public class AuthService {
         return authRepository.save(user);
     }
 
-    public String Login(String username, String password) {
-        Users user = authRepository.findByUsername(username);
-
-        if (user != null) {
-            if(user.getPassword().equals(password)) {
-                return "Login Successfully";
-            } else {
-                return "Check your password";
-            }
-        }
-
-        return "User is not registered with us";
+    public Users Login(String username, String password) {
+        return authRepository.findByUsername(username);
     }
 }

@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // this is base url of my project
-    const API_BASE_URL = "http://localhost:8080/register";
+    const API_BASE_URL = "http://localhost:8080";
 
     // --- Registration Logic ---
     const registerForm = document.getElementById('registerForm');
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
                  return;
             }
 
-            fetch(`API_BASE_URL`, {
+            fetch(`${API_BASE_URL}/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, password, role }),
@@ -121,18 +121,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-
-
-
-
-
-
-
-
-
-
     // --- Login Logic ---
     const loginForm = document.getElementById('loginForm');
+
     if (loginForm) {
         const usernameInput = document.getElementById('loginUsername');
         const passwordInput = document.getElementById('loginPassword');
@@ -140,72 +131,57 @@ document.addEventListener('DOMContentLoaded', () => {
 
         loginForm.addEventListener('submit', function (e) {
             e.preventDefault();
+
             hideMessage();
             setLoading(loginButton, true);
 
             const username = usernameInput.value.trim();
             const password = passwordInput.value;
 
-             if (!username || !password) {
+            if (!username || !password) {
                 showMessage('Please enter username and password.', 'error');
                 setLoading(loginButton, false);
                 return;
             }
 
-            fetch(`${API_BASE_URL}/login`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password }),
+            // Use GET with username and password in URL
+            fetch(`${API_BASE_URL}/login/${username}/${password}`, {
+                method: "GET",
             })
             .then(async res => {
                 if (!res.ok) {
-                     // Try to get error message from backend
                     let errorMessage = "Login failed.";
-                     try {
+
+                    try {
                         const errorData = await res.json();
-                         if (errorData && errorData.message) {
+                        if (errorData && errorData.message) {
                             errorMessage = errorData.message;
                         } else {
-                             errorMessage = `Invalid credentials or server error (${res.status})`;
-                         }
-                    } catch (jsonError) {
+                            errorMessage = `Invalid credentials or server error (${res.status})`;
+                        }
+                    } catch {
                         errorMessage = `Invalid credentials or server error (${res.status})`;
                     }
+
                     throw new Error(errorMessage);
                 }
-                // If response is OK, parse the JSON body
+
                 return res.json();
             })
             .then(data => {
-                // Check for expected data from your Spring backend (e.g., userId, token, role)
-                // Adjust this condition based on what your backend ACTUALLY returns on successful login
-                if (data && data.userId) { // Assuming userId indicates success
+                if (data && data.user_id) { // Adjust based on your Users object structure
                     showMessage('Login successful! Redirecting...', 'success');
-
-                    // Store user info from the response
-                    localStorage.setItem("userId", data.userId);
-                    if(data.role) { // Store role if backend provides it
-                        localStorage.setItem("userRole", data.role);
-                    }
-                     if(data.token) { // Store token if backend provides it
-                        localStorage.setItem("authToken", data.token);
-                    }
-
-                    // Redirect after delay
                     setTimeout(() => {
                         window.location.href = "index.html";
                     }, 1000);
-                    // Keep loading until redirect
-
                 } else {
-                    // If response was OK but didn't contain expected data
                     throw new Error("Login failed: Invalid response from server.");
                 }
             })
             .catch(error => {
                 console.error("Login Error:", error);
                 showMessage(error.message || 'Invalid username or password.', 'error');
-                setLoading(loginButton, false); // Re-enable button on error
+                setLoading(loginButton, false);
             });
         });
     }

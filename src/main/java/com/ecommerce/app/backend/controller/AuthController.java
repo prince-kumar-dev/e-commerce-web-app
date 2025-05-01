@@ -5,6 +5,7 @@ import com.ecommerce.app.backend.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "*")
 @RestController
 public class AuthController {
 
@@ -18,7 +19,7 @@ public class AuthController {
     }
 
     @GetMapping("/login/{username}/{password}")
-    public String authLogin(@PathVariable String username, @PathVariable String password) {
+    public Users authLogin(@PathVariable String username, @PathVariable String password) {
         return authService.Login(username, password);
     }
 }
