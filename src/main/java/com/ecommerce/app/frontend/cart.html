@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Add responsive meta tag -->
+    <title>Your Cart - E-Shop</title>
+    <link rel="stylesheet" href="css/style.css"> <!-- Link main stylesheet FIRST -->
+    <link rel="stylesheet" href="css/cart.css">  <!-- Link cart-specific styles -->
+</head>
+<body>
+
+<!-- ===== Navigation Bar ===== -->
+<header>
+    <nav>
+        <div class="logo"><a href="index.html">E-Shop</a></div>
+        <ul id="nav-links">
+            <li><a href="index.html">Products</a></li>
+            <!-- Login/Register or Welcome/Logout/Cart links will be added by JS -->
+        </ul>
+        <div id="user-status">
+            <!-- User status/logout link added by JS -->
+        </div>
+    </nav>
+</header>
+
+<!-- ===== Main Cart Content ===== -->
+<main class="container"> <!-- Use a container for consistent padding/width -->
+    <h1>Your Shopping Cart</h1>
+
+    <div class="cart-content-wrapper"> <!-- Wrapper for table and summary -->
+
+        <div class="cart-table-container"> <!-- Container for the table -->
+            <table id="cartTable">
+                <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody id="cartItems">
+                <!-- Sample Row (JS will replace this) -->
+                <!--
+                <tr>
+                    <td>Sample Product</td>
+                    <td>2</td>
+                    <td>₹150.00</td>
+                    <td>₹300.00</td>
+                    <td><button class="btn btn-danger btn-sm">Remove</button></td>
+                </tr>
+                -->
+                <tr><td colspan="5">Loading cart...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="cart-summary-container"> <!-- Separate container for summary -->
+            <div class="cart-summary">
+                <h2>Order Summary</h2>
+                <div class="summary-line">
+                    <span>Subtotal:</span>
+                    <span id="grandTotal">₹0.00</span>
+                </div>
+                <!-- Add more lines if needed (e.g., Shipping, Tax) -->
+                <div class="summary-total">
+                    <span>Grand Total:</span>
+                    <span id="finalTotal">₹0.00</span> <!-- Same as subtotal for now -->
+                </div>
+                <button class="btn btn-primary btn-block" onclick="checkout()">Proceed to Checkout</button>
+                <button class="btn btn-outline-danger btn-block" onclick="clearUserCart()">Clear Cart</button>
+            </div>
+        </div>
+
+    </div> <!-- End cart-content-wrapper -->
+
+</main>
+
+<!-- ===== JavaScript Includes ===== -->
+
+<!-- Script for Header Login/Logout Status (MUST be included on every page) -->
+<!-- Option 1: Copy the script block from index.html -->
+<!-- Option 2: Create common.js and include that (Better Practice) -->
+<script>
+    // --- SCRIPT FOR HEADER LOGIN/LOGOUT STATUS ---
+    document.addEventListener('DOMContentLoaded', () => {
+      const userId = localStorage.getItem("userId");
+      const navLinks = document.getElementById('nav-links');
+      const userStatus = document.getElementById('user-status');
+
+      // Clear previous dynamic links/status
+      navLinks.querySelectorAll('.dynamic-link').forEach(link => link.remove());
+      userStatus.innerHTML = '';
+
+      if (userId) {
+        // Logged In
+        userStatus.innerHTML = `<span style="margin-right: 10px; color: #eee;">Welcome User ${userId}!</span> <a href="#" id="logout-link" class="dynamic-link" style="color: #eee; text-decoration: underline;">Logout</a>`;
+
+        // Add Cart link (and make it active on this page)
+        const cartLink = document.createElement('li');
+        cartLink.classList.add('dynamic-link');
+        cartLink.innerHTML = `<a href="cart.html" class="active">Cart</a>`; // Add 'active' class
+        navLinks.appendChild(cartLink);
+
+        // Logout Functionality
+        const logoutButton = document.getElementById('logout-link');
+        if (logoutButton) {
+            logoutButton.addEventListener('click', (e) => {
+              e.preventDefault();
+              localStorage.removeItem("userId");
+              // localStorage.removeItem("authToken"); // If using tokens
+              alert("You have been logged out.");
+              window.location.href = "login.html";
+            });
+        }
+      } else {
+        // Logged Out
+        const loginLink = document.createElement('li');
+        loginLink.classList.add('dynamic-link');
+        loginLink.innerHTML = `<a href="login.html">Login</a>`;
+        navLinks.appendChild(loginLink);
+
+        const registerLink = document.createElement('li');
+        registerLink.classList.add('dynamic-link');
+        registerLink.innerHTML = `<a href="register.html">Register</a>`;
+        navLinks.appendChild(registerLink);
+      }
+    });
+    // --- END OF HEADER SCRIPT ---
+</script>
+
+<!-- Cart specific JavaScript -->
+<script src="js/cart.js"></script>
+
+</body>
+</html>

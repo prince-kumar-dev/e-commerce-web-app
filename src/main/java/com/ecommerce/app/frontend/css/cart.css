@@ -1,0 +1,323 @@
+/* ===== Cart Page Specific Styles (cart.css) ===== */
+
+/* --- Base & Variables (Optional - can be in style.css) --- */
+:root {
+    --primary-color: #007bff; /* Example primary color */
+    --secondary-color: #6c757d; /* Example secondary color */
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --text-color: #212529;
+    --border-color: #dee2e6;
+    --border-radius: 0.375rem; /* Bootstrap's default */
+    --box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    --box-shadow-lg: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* ===== Header / Navigation Bar Styling ===== */
+
+header {
+    position: fixed; /* Fixes the header relative to the viewport */
+    top: 0;          /* Aligns it to the very top */
+    left: 0;         /* Aligns it to the very left */
+    right: 0;        /* Stretches it to the very right (making it full width) */
+    /* OR use width: 100%; */
+
+    background-color: var(--dark-color, #343a40); /* Add a background color (using variable or fallback) */
+    padding: 0 1rem; /* Add some horizontal padding */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow */
+    z-index: 1000; /* Ensures the header stays on top of other content */
+    height: 60px; /* Define a fixed height for the header (adjust as needed) */
+
+    display: flex; /* Use flexbox for nav alignment inside header */
+    align-items: center; /* Vertically center nav items */
+}
+
+/* Push the main body content down so it doesn't hide under the fixed header */
+body {
+    padding-top: 60px; /* MUST match the header height */
+    /* Reset margin if you added it previously */
+    margin: 0;
+    /* Keep other body styles */
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: #f4f7f6;
+    color: var(--text-color, #212529);
+}
+
+
+/* Adjust existing nav styles if needed to work within the fixed header */
+header nav {
+    display: flex;
+    justify-content: space-between; /* Space out logo, links, user status */
+    align-items: center;
+    width: 100%; /* Make nav take full width of header */
+    max-width: 1200px; /* Optional: constrain nav width */
+    margin: 0 auto; /* Center nav if max-width is used */
+    height: 100%; /* Make nav take full height of header */
+}
+
+header nav .logo a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+header nav ul#nav-links {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    gap: 1.5rem; /* Space between nav links */
+}
+
+header nav ul#nav-links li a {
+    color: #eee;
+    text-decoration: none;
+    padding: 0.5rem 0; /* Adjust padding */
+    transition: color 0.2s ease;
+    position: relative; /* For active indicator */
+}
+
+header nav ul#nav-links li a:hover,
+header nav ul#nav-links li a.active {
+    color: #fff;
+}
+
+/* Optional: Active link indicator */
+header nav ul#nav-links li a.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #fff;
+}
+
+
+#user-status {
+    color: #eee;
+    /* Styles for welcome message/logout link */
+}
+
+#user-status a { /* Style logout link specifically if needed */
+     color: #eee;
+     text-decoration: underline;
+     margin-left: 5px;
+}
+
+main.container h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--dark-color);
+    font-weight: 500;
+}
+
+/* --- Cart Layout --- */
+.cart-content-wrapper {
+    display: flex;
+    flex-direction: column; /* Stack table and summary by default */
+    gap: 2rem; /* Space between table and summary */
+}
+
+@media (min-width: 992px) { /* On larger screens */
+    .cart-content-wrapper {
+        flex-direction: row; /* Place table and summary side-by-side */
+        align-items: flex-start; /* Align tops */
+    }
+    .cart-table-container {
+        flex: 2; /* Table takes more space */
+    }
+    .cart-summary-container {
+        flex: 1; /* Summary takes less space */
+        position: sticky; /* Make summary sticky */
+        top: 100px;      /* Adjust based on header height + desired top margin */
+    }
+}
+
+/* --- Cart Table Styling --- */
+.cart-table-container {
+    background-color: #ffffff;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden; /* Needed for border-radius on table */
+}
+
+#cartTable {
+    width: 100%;
+    border-collapse: collapse; /* Remove gaps between cells */
+    color: var(--text-color);
+}
+
+#cartTable thead th {
+    background-color: var(--light-color);
+    color: var(--secondary-color);
+    font-weight: 600;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    text-transform: uppercase;
+    font-size: 0.85em;
+    border-bottom: 2px solid var(--border-color);
+}
+
+#cartTable tbody td {
+    padding: 1rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle; /* Align content vertically */
+    text-align: left;
+    font-size: 0.95em;
+}
+
+#cartTable tbody tr:last-child td {
+    border-bottom: none; /* Remove border from last row */
+}
+
+#cartTable tbody td:nth-child(1) { /* Product name column */
+    font-weight: 500;
+}
+
+#cartTable tbody td:nth-child(3), /* Price */
+#cartTable tbody td:nth-child(4) { /* Total */
+    font-family: monospace; /* Use monospace for numbers */
+    text-align: right;
+}
+
+#cartTable tbody td:nth-child(5) { /* Action column */
+   text-align: center;
+}
+
+/* --- Cart Summary Styling --- */
+.cart-summary-container {
+   width: 100%; /* Take full width when stacked */
+}
+
+.cart-summary {
+    background-color: #ffffff;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.cart-summary h2 {
+    text-align: left;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.75rem;
+}
+
+.cart-summary .summary-line,
+.cart-summary .summary-total {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    font-size: 0.95em;
+}
+
+.cart-summary .summary-total {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--border-color);
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+/* --- Button Styling (Define base button styles, possibly in style.css) --- */
+.btn {
+    display: inline-block;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: 0.5rem 1rem; /* Adjusted padding */
+    font-size: 1rem;
+    border-radius: var(--border-radius);
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    width: auto; /* Default width */
+}
+
+.btn:hover {
+    text-decoration: none;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+.btn-primary:hover {
+    color: #fff;
+    background-color: #0b5ed7; /* Darker shade */
+    border-color: #0a58ca;
+}
+
+.btn-danger {
+    color: #fff;
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+.btn-danger:hover {
+    color: #fff;
+    background-color: #bb2d3b;
+    border-color: #b02a37;
+}
+
+/* Outline button style for secondary actions */
+.btn-outline-danger {
+    color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+.btn-outline-danger:hover {
+    color: #fff;
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+/* Make summary buttons full width */
+.btn-block {
+    display: block;
+    width: 100%;
+}
+.btn-block + .btn-block { /* Add space between block buttons */
+    margin-top: 0.75rem;
+}
+
+/* Smaller button variant for table actions */
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    border-radius: 0.25rem;
+}
+
+/* Apply styles to buttons */
+#cartTable button { /* Target remove button in table */
+    composes: btn btn-danger btn-sm; /* Use composes if using CSS Modules, or just add classes */
+     /* Fallback if composes isn't available: */
+     padding: 0.25rem 0.5rem;
+     font-size: 0.875rem;
+     border-radius: 0.25rem;
+     color: #fff;
+     background-color: var(--danger-color);
+     border-color: var(--danger-color);
+}
+#cartTable button:hover {
+     background-color: #bb2d3b;
+     border-color: #b02a37;
+}
+
+.cart-summary button:nth-of-type(1) { /* Checkout */
+     composes: btn btn-primary btn-block;
+}
+.cart-summary button:nth-of-type(2) { /* Clear Cart */
+     composes: btn btn-outline-danger btn-block;
+}

@@ -83,64 +83,67 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Event Delegation for "Add to Cart" buttons
-    productContainer.addEventListener('click', function(event) {
-        if (event.target && event.target.classList.contains('add-to-cart-btn')) {
-            const productDiv = event.target.closest('.product');
-            const productId = productDiv.getAttribute('data-product-id');
-            if (productId) {
-                 // Temporarily disable button to prevent double clicks
-                 event.target.disabled = true;
-                 event.target.textContent = 'Adding...';
-                 addToCart(parseInt(productId), event.target); // Pass button element
-            }
-        }
-    });
+    if (productContainer) { // Check if container exists before adding listener
+          productContainer.addEventListener('click', function(event) {
+              if (event.target && event.target.classList.contains('add-to-cart-btn')) {
+                  const productDiv = event.target.closest('.product');
+                  // Ensure product_id is correctly retrieved (check attribute name if needed)
+                  const productId = productDiv.getAttribute('data-product-id');
+                  if (productId) {
+                      event.target.disabled = true; // Disable button immediately
+                      event.target.textContent = 'Adding...';
+                      // Call the corrected addToCart function
+                      addProductToCart(parseInt(productId, 10), 1, event.target); // Pass button element
+                  }
+              }
+          });
+    }
 });
 
-// Updated addToCart function
-function addToCart(productId, buttonElement) {
+function addProductToCart(productId, quantity, buttonElement) {
   const userId = localStorage.getItem("userId");
 
   if (!userId) {
     showCartMessage("error", "Please log in first to add items to your cart!");
-    // Redirect after a short delay
-    setTimeout(() => {
-        window.location.href = "login.html";
-    }, 1500);
-    // Re-enable button immediately if redirecting
+    // Re-enable button before redirecting
     if (buttonElement) {
         buttonElement.disabled = false;
         buttonElement.textContent = 'Add to Cart';
     }
+    setTimeout(() => { window.location.href = "login.html"; }, 1500);
     return;
   }
 
-  fetch(`${API_BASE_URL}/cart/add`, {
+  // Construct the correct URL and request body based on the REVISED controller
+  const url = `${API_BASE_URL}/api/cart/add/${userId}`; // userId in path
+  const requestBody = {
+      productId: productId,
+      quantity: quantity
+  };
+
+  fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId: parseInt(userId), productId: productId, quantity: 1 }), // Ensure correct types
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify(requestBody) // Send product/quantity in body
   })
-  .then(res => {
+  .then(async res => { // Use async here to easily await res.json() in case of error
       if (res.ok) {
-          // Check content type before parsing
-          const contentType = res.headers.get("content-type");
-            if (contentType && contentType.indexOf("application/json") !== -1) {
-                return res.json().then(data => ({ ok: true, data })); // Pass data along
-            } else {
-                 return res.text().then(text => ({ ok: true, text })); // Handle plain text response if needed
-            }
+          return res.json(); // Expecting the added/updated CartItemDTO
       } else {
-          // Try to parse error response
-           return res.json().catch(() => null).then(errorData => {
-                throw new Error(errorData?.message || `Failed to add to cart: ${res.status} ${res.statusText}`);
-            });
+          // Try to parse error message from backend
+          let errorMsg = `Failed to add to cart: ${res.status}`;
+          try {
+              const errorData = await res.json(); // await here
+              errorMsg = errorData.message || errorMsg;
+          } catch (e) { /* Ignore if response not JSON */ }
+          throw new Error(errorMsg);
       }
   })
-  .then(response => { // Use response.data or response.text
-      // Use backend message if available, otherwise generic success
-      const successMessage = response.data?.message || response.text || "Product added to cart!";
-      showCartMessage("success", successMessage);
-      // Maybe update stock display if backend confirms? (More advanced)
+  .then(addedItemDto => {
+      console.log("Item added/updated:", addedItemDto);
+      showCartMessage("success", `"${addedItemDto.product.name}" added to cart!`);
   })
   .catch(error => {
       console.error("Add to cart Error:", error);

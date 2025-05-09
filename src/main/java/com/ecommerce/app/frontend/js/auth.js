@@ -119,8 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-
-
     // --- Login Logic ---
     const loginForm = document.getElementById('loginForm');
 
@@ -170,6 +168,9 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(data => {
                 if (data && data.user_id) { // Adjust based on your Users object structure
+                    localStorage.setItem("userId", data.user_id); // Store userId after login
+                    localStorage.setItem("username", data.username);
+
                     showMessage('Login successful! Redirecting...', 'success');
                     setTimeout(() => {
                         window.location.href = "index.html";
